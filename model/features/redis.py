@@ -2,11 +2,11 @@
 # This product includes software developed at Datadog (https://www.datadoghq.com/).
 # Copyright 2021 Datadog, Inc.
 
-from model import tag
+from model import feature
 
 """
-A grouping of features related to sampling.
+A grouping of features related to redis.
 """
-class SamplingCategory(tag.Tag):
-    name = "Sampling"
-    description = "Features which relate to sampling decisions and priority."
+class RedisFeature(feature.Feature):
+    name = "Redis Client"
+    description = "Calls to redis are instrumented."

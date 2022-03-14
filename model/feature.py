@@ -12,17 +12,23 @@ class Feature:
 
     name = "TODO"
     description = "TODO"
+    
     categories = []
     tags = []
+    tests = []
+
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
 
     def __instancecheck__(cls, instance):
         return cls.__subclasscheck__(type(instance))
 
-    def get_description(self) -> str:
-        return "TODO"
-
-    def tag(self, tag = tag.Tag) -> str:
+    def tag(self, tag = tag.Tag):
         self.tags.append(tag)
 
-    def categorize(self, category = category.FeatureCategory) -> str:
+    def categorize(self, category = category.FeatureCategory):
         self.categories.append(category)
+
+    def link_test(self, path = str):
+        self.tests.append(path)

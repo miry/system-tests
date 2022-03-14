@@ -11,6 +11,9 @@ class FeatureCategory:
 
     features = []
 
+    def __init__(self):
+        pass
+
     def __instancecheck__(cls, instance):
         return cls.__subclasscheck__(type(instance))
 
