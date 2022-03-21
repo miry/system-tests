@@ -3,10 +3,14 @@
 # Copyright 2021 Datadog, Inc.
 
 from model import feature
+from model.categories import integration
 
 """
-A grouping of features related to redis.
+Coverage of redis clients.
 """
 class RedisFeature(feature.Feature):
-    name = "Redis Client"
-    description = "Calls to redis are instrumented."
+    def __init__(self, name, description):
+        self.name = "Redis Client"
+        self.description = "Calls to redis are instrumented."
+        self.link_test("/tests/test_traces.py")
+        self.is_integration()

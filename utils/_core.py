@@ -11,7 +11,6 @@ import requests
 
 from utils.tools import logger, m
 
-
 class BaseTestCase(unittest.TestCase):
     _weblog_url_prefix = "http://weblog:7777"
 

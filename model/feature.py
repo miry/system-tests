@@ -4,6 +4,7 @@
 
 import tag
 import category
+from model.categories import integration
 
 """
 A feature to be tested.
@@ -32,3 +33,6 @@ class Feature:
 
     def link_test(self, path = str):
         self.tests.append(path)
+
+    def is_integration(self):
+        self.categorize(integration.IntegrationCategory)
