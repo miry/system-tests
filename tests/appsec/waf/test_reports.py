@@ -12,12 +12,11 @@ if context.library == "cpp":
 
 
 @missing_feature(library="golang")
-@missing_feature(library="java")
 @missing_feature(library="dotnet")
 @missing_feature(library="nodejs")
 @missing_feature(library="python")
 @missing_feature(library="ruby")
-@released(php_appsec="0.3.0")
+@released(php_appsec="0.3.0", java="0.99.0")
 class Test_Monitoring(BaseTestCase):
     """ Support In-App WAF monitoring tags and metrics  """
 
