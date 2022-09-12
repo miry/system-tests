@@ -16,7 +16,8 @@ namespace ApmTestClient.Services
         private static readonly Type AgentWriterType = Type.GetType("Datadog.Trace.Agent.AgentWriter, Datadog.Trace", throwOnError: true)!;
         private static readonly Type StatsAggregatorType = Type.GetType("Datadog.Trace.Agent.StatsAggregator, Datadog.Trace", throwOnError: true)!;
 
-        // Accessors for internal properties/fields accessors
+        // Accessors for internal methods/properties/fields accessors
+        private static readonly MethodInfo ActivateSpan = TracerType.GetMethod("ActivateSpan", BindingFlags.Instance | BindingFlags.NonPublic)!;
         private static readonly PropertyInfo GetTracerManager = TracerType.GetProperty("TracerManager", BindingFlags.Instance | BindingFlags.NonPublic)!;
         private static readonly MethodInfo GetAgentWriter = TracerManagerType.GetProperty("AgentWriter", BindingFlags.Instance | BindingFlags.Public)!.GetGetMethod()!;
         private static readonly FieldInfo GetStatsAggregator = AgentWriterType.GetField("_statsAggregator", BindingFlags.Instance | BindingFlags.NonPublic)!;
@@ -42,10 +43,9 @@ namespace ApmTestClient.Services
                 FinishOnClose = false,
             };
 
-            if (request.HasParentId && request.ParentId > 0)
+            if (request.HasParentId && request.ParentId > 0 && Spans[request.ParentId] is ISpan parent)
             {
-                var parentSpan = Spans[request.ParentId];
-                creationSettings.Parent = new SpanContext(parentSpan.TraceId, parentSpan.SpanId);
+                ActivateSpan.Invoke(Tracer.Instance, new object[] { parent, false });
             }
 
             using var scope = Tracer.Instance.StartActive(operationName: request.Name, creationSettings);
@@ -150,15 +150,18 @@ namespace ApmTestClient.Services
 
             // Invoke StatsAggregator.DisposeAsync()
             // This will cause the stats loop to exit and rely on StatsAggregator.Flush() calls to push stats to the agent
-            var disposeAsyncTask = StatsAggregatorDisposeAsync.Invoke(statsAggregator, null) as Task;
-            await disposeAsyncTask!;
+            if (statsAggregator.GetType() == StatsAggregatorType)
+            {
+                var disposeAsyncTask = StatsAggregatorDisposeAsync.Invoke(statsAggregator, null) as Task;
+                await disposeAsyncTask!;
 
-            // Invoke StatsAggregator.Flush()
-            // If StatsAggregator.DisposeAsync() was previously called during the lifetime of the application,
-            // then no stats will be flushed when StatsAggregator.DisposeAsync() returns.
-            // To be safe, perform an extra flush to ensure that we have flushed the stats
-            var flushTask = StatsAggregatorFlush.Invoke(statsAggregator, null) as Task;
-            await flushTask!;
+                // Invoke StatsAggregator.Flush()
+                // If StatsAggregator.DisposeAsync() was previously called during the lifetime of the application,
+                // then no stats will be flushed when StatsAggregator.DisposeAsync() returns.
+                // To be safe, perform an extra flush to ensure that we have flushed the stats
+                var flushTask = StatsAggregatorFlush.Invoke(statsAggregator, null) as Task;
+                await flushTask!;
+            }
 
             return new FlushTraceStatsReturn();
         }

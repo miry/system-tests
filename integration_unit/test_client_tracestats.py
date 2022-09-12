@@ -136,7 +136,6 @@ def test_distinct_aggregationkeys_TS003(apm_test_server_env, apm_test_server_fac
 
 @all_libs()
 @enable_tracestats()
-@pytest.mark.skip_libraries(["dotnet"], "FIXME: test_agent.v06_stats_requests should return 3 stats NOT 4")
 def test_measured_spans_TS004(apm_test_server_env, apm_test_server_factory, test_agent, test_client):
     """
     When spans are marked as measured
