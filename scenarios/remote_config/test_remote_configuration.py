@@ -17,7 +17,7 @@ with open("scenarios/remote_config/rc_expected_requests_asm_dd.json") as f:
 
 
 @rfc("https://docs.google.com/document/d/1u_G7TOr8wJX0dOM_zUDKuRJgxoJU_hVTd5SeaMucQUs/edit#heading=h.octuyiil30ph")
-@released(cpp="?", dotnet="?", java="?", php="?", python="?", ruby="?", nodejs="?")
+@released(cpp="?", dotnet="?", java="0.109.0", php="?", python="?", ruby="?", nodejs="?")
 @coverage.basic
 class Test_RemoteConfigurationFields(BaseTestCase):
     """ Misc tests on fields and values on remote configuration reauests """
@@ -125,7 +125,7 @@ def rc_check_request(data, expected, caching):
 
 
 @rfc("https://docs.google.com/document/d/1u_G7TOr8wJX0dOM_zUDKuRJgxoJU_hVTd5SeaMucQUs/edit#heading=h.octuyiil30ph")
-@released(cpp="?", dotnet="?", java="?", php="?", python="?", ruby="?", nodejs="?")
+@released(cpp="?", dotnet="?", java="0.109.0", php="?", python="?", ruby="?", nodejs="?")
 @coverage.basic
 class Test_RemoteConfigurationUpdateSequenceFeatures(BaseTestCase):
     """Tests that over a sequence of related updates, tracers follow the RFC for the Features product"""
@@ -173,7 +173,7 @@ class Test_RemoteConfigurationUpdateSequenceLiveDebugging(BaseTestCase):
 
 
 @rfc("https://docs.google.com/document/d/1u_G7TOr8wJX0dOM_zUDKuRJgxoJU_hVTd5SeaMucQUs/edit#heading=h.octuyiil30ph")
-@released(cpp="?", dotnet="?", java="?", php="?", python="?", ruby="?", nodejs="?")
+@released(cpp="?", dotnet="?", java="0.109.0", php="?", python="?", ruby="?", nodejs="?")
 @coverage.basic
 class Test_RemoteConfigurationUpdateSequenceASMDD(BaseTestCase):
     """Tests that over a sequence of related updates, tracers follow the RFC for the ASM DD product"""

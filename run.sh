@@ -133,6 +133,7 @@ elif [ $SYSTEMTESTS_SCENARIO = "REMOTE_CONFIG_MOCKED_BACKEND_FEATURES" ]; then
     export RUNNER_ARGS="scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationFields scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationUpdateSequenceFeatures"
     export SYSTEMTESTS_LOG_FOLDER=logs_remote_config_mocked_backend_features
     export SYSTEMTESTS_LIBRARY_PROXY_STATE='{"mock_remote_config_backend": "FEATURES"}'
+    WEBLOG_ENV="DD_REMOTE_CONFIG_URL=http://library_proxy:8126/v0.7/config\nDD_REMOTE_CONFIG_ENABLED=true\nDD_REMOTE_CONFIG_INITIAL_POLL_INTERVAL=1"
 
 elif [ $SYSTEMTESTS_SCENARIO = "REMOTE_CONFIG_MOCKED_BACKEND_LIVE_DEBUGGING" ]; then
     export RUNNER_ARGS="scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationFields scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationUpdateSequenceLiveDebugging"
@@ -143,6 +144,7 @@ elif [ $SYSTEMTESTS_SCENARIO = "REMOTE_CONFIG_MOCKED_BACKEND_ASM_DD" ]; then
     export RUNNER_ARGS="scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationFields scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationUpdateSequenceASMDD"
     export SYSTEMTESTS_LOG_FOLDER=logs_remote_config_mocked_backend_asm_dd
     export SYSTEMTESTS_LIBRARY_PROXY_STATE='{"mock_remote_config_backend": "ASM_DD"}'
+    WEBLOG_ENV="DD_REMOTE_CONFIG_URL=http://library_proxy:8126/v0.7/config\nDD_REMOTE_CONFIG_ENABLED=true\nDD_REMOTE_CONFIG_INITIAL_POLL_INTERVAL=1"
 
 elif [ $SYSTEMTESTS_SCENARIO = "REMOTE_CONFIG_MOCKED_BACKEND_FEATURES_NOCACHE" ]; then
     export RUNNER_ARGS="scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationFields scenarios/remote_config/test_remote_configuration.py::Test_RemoteConfigurationUpdateSequenceFeaturesNoCache"
