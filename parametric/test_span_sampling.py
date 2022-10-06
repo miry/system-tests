@@ -13,10 +13,15 @@ import json
 
 
 @pytest.mark.skip_library("dotnet", "Not implemented")
-@pytest.mark.skip_library("golang", "Not implemented")
 @pytest.mark.skip_library("nodejs", "Not implemented")
 @pytest.mark.parametrize(
-    "library_env", [{"DD_SPAN_SAMPLING_RULES": json.dumps([{"service": "webserver", "name": "web.request"}])}]
+    "library_env",
+    [
+        {
+            "DD_SPAN_SAMPLING_RULES": json.dumps([{"service": "webserver", "name": "web.request", "sample_rate": 1.0, "max_per_second":100}]),
+            "DD_TRACE_SAMPLE_RATE": 0,
+        }
+    ],
 )
 def test_single_rule_match_span_sampling_sss001(test_agent, test_library):
     """Test that span sampling tags are added when both:
