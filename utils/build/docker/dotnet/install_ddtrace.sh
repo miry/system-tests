@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -eux
 
 cd /binaries
 
@@ -25,10 +25,10 @@ if [ -e /opt/datadog/tracer/Datadog.Tracer.Native.so ]
 then
     # native tracer is in tracer subfolder
     cp /opt/datadog/tracer/Datadog.Tracer.Native.so /binaries/libDatadog.Trace.ClrProfiler.Native.so
-elif [ -e /opt/datadog/linux-x64/Datadog.Tracer.Native.so ]
+elif [ -e /opt/datadog/linux-arm64/Datadog.Tracer.Native.so ]
 then
     # native tracer is in arch folder - Waf expects Datadog.Tracer.Native for PInvoke
-    cp /opt/datadog/linux-x64/Datadog.Tracer.Native.so /binaries/Datadog.Tracer.Native.so
+    cp /opt/datadog/linux-arm64/Datadog.Tracer.Native.so /binaries/Datadog.Tracer.Native.so
 else
     cp /opt/datadog/Datadog.Trace.ClrProfiler.Native.so /binaries/libDatadog.Trace.ClrProfiler.Native.so
 fi
