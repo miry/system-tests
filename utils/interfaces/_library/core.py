@@ -25,10 +25,7 @@ from utils.interfaces._library.sampling import (
     _AddSamplingDecisionValidation,
     _DistributedTracesDeterministicSamplingDecisisonValidation,
 )
-from utils.interfaces._library.telemetry import (
-    _SeqIdLatencyValidation,
-    _NoSkippedSeqId,
-)
+from utils.interfaces._library.telemetry import _SeqIdLatencyValidation, _NoSkippedSeqId, _AppClosingValidation
 from utils.interfaces._misc_validators import HeadersPresenceValidation
 
 
@@ -167,6 +164,9 @@ class LibraryInterfaceValidator(InterfaceValidator):
 
     def assert_no_skipped_seq_ids(self):
         self.append_validation(_NoSkippedSeqId())
+
+    def assert_app_closing_validation(self):
+        self.append_validation(_AppClosingValidation())
 
     def add_profiling_validation(self, validator):
         self.add_validation(validator, path_filters="/profiling/v1/input")

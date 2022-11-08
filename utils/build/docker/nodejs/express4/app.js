@@ -1,13 +1,15 @@
 'use strict'
 
-const tracer = require('dd-trace').init({ debug: true,  experimental: {
-  iast: {
-    enabled: true,
-    requestSampling: 100,
-    maxConcurrentRequests: 4,
-    maxContextOperations: 30
+const tracer = require('dd-trace').init({
+  debug: true, experimental: {
+    iast: {
+      enabled: true,
+      requestSampling: 100,
+      maxConcurrentRequests: 4,
+      maxContextOperations: 30
+    }
   }
-} });
+});
 
 const app = require('express')();
 const crypto = require('crypto');
@@ -116,7 +118,17 @@ app.get('/iast/insecure_cipher/test_secure_algorithm', (req, res) => {
   res.send(Buffer.concat([cipher.update('12345'), cipher.final()]))
 });
 
-app.listen(7777, '0.0.0.0', () => {
-  tracer.trace('init.service', () => {});
+app.post('/shutdown', (req, res, next) => {
+  res.send("Shutting down..")
+  next()
+});
+
+app.use(function (req, res, next) {
+  console.log("Closing the server...");
+  server.close()
+});
+
+const server = app.listen(7777, '0.0.0.0', () => {
+  tracer.trace('init.service', () => { });
   console.log('listening');
 });

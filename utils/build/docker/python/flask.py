@@ -2,6 +2,9 @@ import requests
 
 from ddtrace import tracer
 from flask import Flask, request as flask_request, Response
+from psutil import process_iter
+from signal import SIGTERM
+import os
 
 try:
     from ddtrace.contrib.trace_utils import set_user
@@ -101,3 +104,25 @@ def identify_propagate():
         propagate=True,
     )
     return Response("OK")
+
+
+@app.route("/shutdown", methods=["POST"])
+def shutdown():
+    print("Request to shutdown received...")
+    return "Shutting down..."
+
+
+@app.teardown_request
+def kill_server_processes(exc):
+    try:
+        if (
+            flask_request.environ.get("PATH_INFO") == "/shutdown"
+            and flask_request.environ.get("REQUEST_METHOD") == "POST"
+        ):
+            for proc in process_iter():
+                for conns in proc.connections(kind="inet"):
+                    if conns.laddr.port == 7777:
+                        print("Killing server process...")
+                        proc.send_signal(SIGTERM)
+    except AttributeError:
+        pass

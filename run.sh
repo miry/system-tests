@@ -19,6 +19,7 @@ fi
 CONTAINERS=(weblog agent runner agent_proxy library_proxy)
 interfaces=(agent library backend)
 WEBLOG_ENV="DD_APPSEC_ENABLED=true\n"
+WEBLOG_ENV+="DD_TELEMETRY_HEARTBEAT_INTERVAL=5\n"
 
 export SYSTEMTESTS_SCENARIO=${1:-DEFAULT}
 export SYSTEMTESTS_VARIATION=${2:-DEFAULT}
@@ -172,6 +173,10 @@ elif [ $SYSTEMTESTS_SCENARIO = "INTEGRATIONS" ]; then
     export RUNNER_ARGS="scenarios/integrations"
     export SYSTEMTESTS_LOG_FOLDER=logs_integrations
     CONTAINERS+=(cassandra_db mongodb)
+
+elif [ $SYSTEMTESTS_SCENARIO = "TELEMETRY_CLOSING" ]; then
+    export RUNNER_ARGS="scenarios/test_telemetry.py"
+    export SYSTEMTESTS_LOG_FOLDER=logs_telemetry_closing
 
 else # Let user choose the target
     export RUNNER_ARGS=$@

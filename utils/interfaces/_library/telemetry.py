@@ -60,3 +60,23 @@ class _NoSkippedSeqId(BaseValidation):
                 self.set_failure(
                     f"Detected non conscutive seq_ids between {self.seq_ids[i + 1][1]} and {self.seq_ids[i][1]}"
                 )
+
+
+class _AppClosingValidation(BaseValidation):
+    """Verify the app-closing message sent"""
+
+    path_filters = TELEMETRY_AGENT_ENDPOINT
+    is_success_on_expiry = True
+
+    def __init__(self):
+        super().__init__()
+        self.app_closing_sent = False
+
+    def check(self, data):
+        content = data["request"]["content"]
+        if content.get("request_type") == "app-closing":
+            self.app_closing_sent = True
+
+    def final_check(self):
+        if not self.app_closing_sent:
+            self.set_failure("App-closing not sent upon graceful weblog app termination")
