@@ -16,21 +16,12 @@ from utils import BaseTestCase, interfaces, context, missing_feature, coverage, 
     ruby="?",
     cpp="?",
 )
-class Test_Iast(BaseTestCase):
-    """Verify IAST features"""
+class TestIastWeakHash(BaseTestCase):
+    """Verify IAST weak hash detection feature"""
 
     EXPECTATIONS = {
-        "nodejs": {
-            "LOCATION": {"WEAK_HASH": "/usr/app/iast.js", "SQL_INJECTION": "/usr/app/iast.js",},
-            "WEAK_CIPHER_ALGORITHM": "des-ede-cbc",
-        },
-        "java": {
-            "LOCATION": {
-                "WEAK_HASH": "com.datadoghq.system_tests.springboot.iast.utils.CryptoExamples",
-                "SQL_INJECTION": "com.datadoghq.system_tests.springboot.iast.utils.SqlExamples",
-            },
-            "WEAK_CIPHER_ALGORITHM": "Blowfish",
-        },
+        "nodejs": {"LOCATION": {"WEAK_HASH": "/usr/app/app.js"}},
+        "java": {"LOCATION": {"WEAK_HASH": "com.datadoghq.system_tests.springboot.iast.utils.CryptoExamples"}},
     }
 
     def __expected_location(self, vulnerability):
@@ -76,34 +67,3 @@ class Test_Iast(BaseTestCase):
         r = self.weblog_get("/iast/insecure_hashing/test_md5_algorithm")
 
         interfaces.library.expect_iast_vulnerabilities(r, vulnerability_type="WEAK_HASH", evidence="md5")
-
-    def test_insecure_cipher(self):
-        """Test weak cipher algorithm is reported as insecure"""
-        r = self.weblog_get("/iast/insecure_cipher/test_insecure_algorithm")
-
-        interfaces.library.expect_iast_vulnerabilities(
-            r, vulnerability_type="WEAK_CIPHER", evidence=self.__expected_weak_cipher_algorithm(),
-        )
-
-    def test_secure_cipher(self):
-        """Test strong cipher algorithm is not reported as insecure"""
-        r = self.weblog_get("/iast/insecure_cipher/test_secure_algorithm")
-
-        interfaces.library.expect_no_vulnerabilities(r)
-
-    @missing_feature(reason="Need to implement SQL injection detection")
-    def test_secure_sql(self):
-        """Secure SQL queries are not reported as insecure"""
-        r = self.weblog_post("/iast/sqli/test_secure", data={"username": "shaquille_oatmeal", "password": "123456"})
-        interfaces.library.expect_no_vulnerabilities(r)
-
-    @missing_feature(reason="Need to implement SQL injection detection")
-    def test_insecure_sql(self):
-        """Insecure SQL queries are reported as insecure"""
-        r = self.weblog_post("/iast/sqli/test_insecure", data={"username": "shaquille_oatmeal", "password": "123456"})
-        interfaces.library.expect_iast_vulnerabilities(
-            r,
-            vulnerability_count=1,
-            vulnerability_type="SQL_INJECTION",
-            location_path=self.__expected_location("SQL_INJECTION"),
-        )
