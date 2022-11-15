@@ -20,7 +20,8 @@ class TestIastSqlInjection(BaseTestCase):
     """Verify IAST features"""
 
     EXPECTATIONS = {
-        "java": {"LOCATION": {"SQL_INJECTION": "com.datadoghq.system_tests.springboot.iast.utils.SqlExamples"}}
+        "java": {"LOCATION": {"SQL_INJECTION": "com.datadoghq.system_tests.springboot.iast.utils.SqlExamples"}},
+        "nodejs": {"LOCATION": {"SQL_INJECTION": "/usr/app/iast.js"}},
     }
 
     def __expected_location(self, vulnerability):

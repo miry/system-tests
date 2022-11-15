@@ -20,7 +20,7 @@ class TestIastWeakHash(BaseTestCase):
     """Verify IAST weak hash detection feature"""
 
     EXPECTATIONS = {
-        "nodejs": {"LOCATION": {"WEAK_HASH": "/usr/app/app.js"}},
+        "nodejs": {"LOCATION": {"WEAK_HASH": "/usr/app/iast.js"}},
         "java": {"LOCATION": {"WEAK_HASH": "com.datadoghq.system_tests.springboot.iast.utils.CryptoExamples"}},
     }
 

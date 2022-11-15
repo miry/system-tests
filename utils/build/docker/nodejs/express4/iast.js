@@ -2,6 +2,7 @@ const { Client, Pool } = require('pg')
 const { readFileSync } = require('fs')
 const { join } = require('path')
 const crypto = require('crypto');
+const { execSync } = require('child_process')
 
 function initData () {
   const query = readFileSync(join(__dirname, 'resources', 'iast-data.sql')).toString()
@@ -98,6 +99,11 @@ function init (app, tracer) {
       })
     })
   });
+
+  app.post('/iast/cmdi/test_insecure', (req, res) => {
+    const result = execSync(req.body.cmd)
+    res.send(result.toString())
+  })
 
 }
 
