@@ -20,6 +20,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.event.EventListener;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.beans.BeansException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +61,8 @@ import static com.mongodb.client.model.Filters.eq;
 @RestController
 @EnableAutoConfiguration
 @ComponentScan(basePackages = {"com.datadoghq.system_tests.springboot"})
-public class App {
+public class App implements ApplicationContextAware{
+    private ApplicationContext context;
 
     CassandraConnector cassandra;
     MongoClient mongoClient;
@@ -320,6 +325,16 @@ public class App {
     @Bean
     WebLogInterface localInterface() throws IOException {
         return new WebLogInterface();
+    }
+
+    @PostMapping("/shutdown")
+    public void shutdown() {
+        ((ConfigurableApplicationContext) context).close();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
+        this.context = ctx;
     }
 
     public static void main(String[] args) {
