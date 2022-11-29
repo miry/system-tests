@@ -5,6 +5,7 @@
 """Telemetry tests for app-closing event"""
 from utils import BaseTestCase, interfaces, bug
 import time
+import requests_unixsocket
 
 
 @bug(library="cpp", reason="Need to understand how to activate profiling")
@@ -18,6 +19,9 @@ class Test_App_Closing(BaseTestCase):
     def test_app_closing(self):
         """Assert app-closing is sent when weblog app is closed"""
         time.sleep(5)
-        self.weblog_post("/shutdown", data=None)
+        # self.weblog_post("/shutdown", data=None)
         # time.sleep(5)
+        session = requests_unixsocket.Session()
+        r = session.get('http+unix://%2Fvar%2Frun%2Fdocker.sock/containers/system-tests_weblog_1/kill')
+        time.sleep(5)
         interfaces.library.assert_app_closing_validation()

@@ -9,6 +9,7 @@ python-dateutil==2.8.2
 msgpack==1.0.4
 protobuf==3.20.2  # grpcio-tools 1.48.1 depends on protobuf<4.0dev and >=3.12.0
 grpcio-tools==1.48.1
+requests_unixsocket
 
 aiohttp==3.8.2
 yarl==1.8.1
