@@ -20,6 +20,13 @@ namespace weblog
 
                 using var reader = cmd.ExecuteReader();
 
+                // Add the custom tag that will override the "DD-Api-Key" inside `asm-signals-generator`
+                string urlParams = context.Request.QueryString.Value;
+                string override_api_key = System.Web.HttpUtility.ParseQueryString(urlParams).Get("override_api_key");
+
+                Helper.AddCustomSpanTags("override_api_key:" + override_api_key);
+
+                // Process response
                 while (reader.Read())
                 {
                     var value = reader["Value"]?.ToString();

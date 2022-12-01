@@ -21,6 +21,25 @@ namespace weblog
                     childScope.Span.SetTag("garbage" + i, RandomString(50));
                 }
             }
+
+            string customSpanTags = Environment.GetEnvironmentVariable("TEST_SPAN_CUSTOM_TAGS");
+            AddCustomSpanTags(customSpanTags);
+        }
+
+        public static void AddCustomSpanTags(string customSpanTags) 
+        {
+            using (var childScope = Tracer.Instance.StartActive("spans.child"))
+            {
+                // Send custom span tags
+                if (!String.IsNullOrEmpty(customSpanTags)) {
+                    string[] customSpanTagsArr = customSpanTags.Split(',');
+                    foreach (var tag in customSpanTagsArr)
+                    {
+                        string[] arr = tag.Split(':');
+                        childScope.Span.SetTag(arr[0], arr[1]);
+                    }                    
+                }
+            }
         }
 
         private static string RandomString(int length)
