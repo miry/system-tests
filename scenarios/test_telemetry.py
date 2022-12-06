@@ -3,7 +3,7 @@
 # Copyright 2022 Datadog, Inc.
 
 """Telemetry tests for app-closing event"""
-from utils import interfaces, bug
+from utils import interfaces, bug, weblog
 import time
 import requests_unixsocket
 
@@ -17,10 +17,15 @@ class Test_App_Closing:
 
     def test_app_closing(self):
         """Assert app-closing is sent when weblog app is closed"""
-        time.sleep(5)
-        # self.weblog_post("/shutdown", data=None)
-        # time.sleep(5)
-        session = requests_unixsocket.Session()
-        r = session.get("http+unix://%2Fvar%2Frun%2Fdocker.sock/containers/system-tests_weblog_1/kill")
+
+        def close_container():
+            session = requests_unixsocket.Session()
+            r = session.get("http+unix://%2Fvar%2Frun%2Fdocker.sock/containers/system-tests_weblog_1/kill")
+
+        def close_weblog():
+            weblog.post("/shutdown", data=None)
+
+        close_weblog()
+        close_container()
         time.sleep(5)
         interfaces.library.assert_app_closing_validation()
