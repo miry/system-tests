@@ -3,17 +3,16 @@
 # Copyright 2022 Datadog, Inc.
 
 """Telemetry tests for app-closing event"""
-from utils import BaseTestCase, interfaces, bug
+from utils import interfaces, bug
 import time
 import requests_unixsocket
 
 
-@bug(library="cpp", reason="Need to understand how to activate profiling")
-@bug(library="golang", reason="Need to understand how to activate profiling")
-@bug(library="dotnet", reason="Need to understand how to activate profiling")
-@bug(library="php", reason="Need to understand how to activate profiling")
-@bug(library="ruby", reason="Need to understand how to activate profiling")
-class Test_App_Closing(BaseTestCase):
+@bug(library="cpp", reason="Not yet implemented")
+@bug(library="golang", reason="Not yet implemented")
+@bug(library="php", reason="Not yet implemented")
+@bug(library="ruby", reason="Not yet implemented")
+class Test_App_Closing:
     """Basic testing of app closing"""
 
     def test_app_closing(self):
@@ -22,6 +21,6 @@ class Test_App_Closing(BaseTestCase):
         # self.weblog_post("/shutdown", data=None)
         # time.sleep(5)
         session = requests_unixsocket.Session()
-        r = session.get('http+unix://%2Fvar%2Frun%2Fdocker.sock/containers/system-tests_weblog_1/kill')
+        r = session.get("http+unix://%2Fvar%2Frun%2Fdocker.sock/containers/system-tests_weblog_1/kill")
         time.sleep(5)
         interfaces.library.assert_app_closing_validation()
