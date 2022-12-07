@@ -1,6 +1,9 @@
 'use strict'
 
-const tracer = require('dd-trace').init({ debug: true,  experimental: {
+const tracer = require('dd-trace').init({
+  debug: true,
+  profiling: true,
+  experimental: {
   iast: {
     enabled: true,
     requestSampling: 100,
