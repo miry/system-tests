@@ -52,7 +52,31 @@ class _BackendInterfaceValidator(InterfaceValidator):
             "host": host,
             "path": path,
             "rid": rid,
-            "response": {"status_code": r.status_code, "content": r.text, "headers": dict(r.headers),},
+            "response": {"status_code": r.status_code, "content": r.text, "headers": dict(r.headers), },
+        }
+
+    def get_backend_data(self, request):
+        rid = get_rid_from_request(request)
+
+        if rid not in self.rid_to_trace_id:
+            raise Exception("There is no trace id related to this request ")
+
+        trace_id = self.rid_to_trace_id[rid]
+
+        path = f"/api/v1/trace/{trace_id}"
+        host = "https://dd.datad0g.com"
+
+        headers = {
+            "DD-API-KEY": os.environ["DD_API_KEY"],
+            "DD-APPLICATION-KEY": os.environ["DD_APPLICATION_KEY"],
+        }
+        r = requests.get(f"{host}{path}", headers=headers, timeout=10)
+
+        return {
+            "host": host,
+            "path": path,
+            "rid": rid,
+            "response": {"status_code": r.status_code, "content": r.text, "headers": dict(r.headers), },
         }
 
     def assert_waf_attack(self, request):

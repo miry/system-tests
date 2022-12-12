@@ -104,7 +104,7 @@ class Test_StandardTagsUserAgent:
         self.r = weblog.get("/waf", headers={"user-agent": "Mistake Not ..."})
 
     def test_useragent(self):
-        # system tests uses user-agent to ad a request id => allow anything at the end
+        # system tests uses user-agent to add a request id => allow anything at the end
         tags = {"http.useragent": r"Mistake Not \.\.\. .*"}
         interfaces.library.add_span_tag_validation(self.r, tags=tags, value_as_regular_expression=True)
 
