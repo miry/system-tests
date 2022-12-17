@@ -4,6 +4,7 @@ from typing import Any
 from typing import Optional
 from typing import List
 
+import math
 import numpy
 import msgpack
 import pytest
@@ -347,7 +348,6 @@ def test_sample_rate_0_TS007(library_env, test_agent, test_library, test_server)
     assert web_stats["Hits"] == 1
 
 
-@pytest.mark.skip(reason="relative error test is broken")
 @enable_tracestats()
 def test_relative_error_TS008(library_env, test_agent, test_library):
     """
@@ -357,6 +357,10 @@ def test_relative_error_TS008(library_env, test_agent, test_library):
     Note that this test uses the duration of actual spans created and so this test could be flaky.
     This flakyness however would indicate a bug in the trace stats computation.
     """
+
+    def get_quantile_index(quantile, arrayLength):
+        numberOfElementsLessThanEqualTo = math.floor(1 + (quantile * arrayLength - 1))
+        return numberOfElementsLessThanEqualTo - 1
 
     with test_library:
         # Create 10 traces to get more data
@@ -381,11 +385,13 @@ def test_relative_error_TS008(library_env, test_agent, test_library):
     assert web_stats["Hits"] == 10
 
     # Validate the sketches
-    np_duration = numpy.array(durations)
+    durations.sort()
     assert web_stats["Duration"] == sum(durations), "Stats duration should match the span duration exactly"
     for quantile in (0.5, 0.75, 0.95, 0.99, 1):
-        assert web_stats["OkSummary"].get_quantile_value(quantile) == pytest.approx(
-            numpy.quantile(np_duration, quantile), rel=0.01,
+        actualQuantileValue = durations[get_quantile_index(quantile, 10)]
+        sketchQuantileValue = web_stats["OkSummary"].get_quantile_value(quantile)
+        assert sketchQuantileValue == pytest.approx(
+            actualQuantileValue, rel=actualQuantileValue*0.00775, # TODO: Actually get the relative accuracy instead of hard-coding
         ), ("Quantile mismatch for quantile %r" % quantile)
 
 
