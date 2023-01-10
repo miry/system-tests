@@ -5,7 +5,7 @@ FROM eclipse-temurin:8 as agent
 RUN apt-get update && \
 	apt-get install -y libarchive-tools
 # Install tracer
-COPY ./utils/build/docker/java/install_ddtrace.sh binaries* /binaries/
+COPY ./utils/build/docker/java/install_ddtrace.sh binaries/*.jar /binaries/
 RUN /binaries/install_ddtrace.sh
 
 
@@ -20,14 +20,22 @@ WORKDIR /app
 
 # Copy application sources
 COPY ./utils/build/docker/java/spring-boot/pom.xml .
+RUN mkdir /maven && /opt/apache-maven-3.8.6/bin/mvn -Dmaven.repo.local=/maven -B dependency:go-offline -P spring-native
+
+
 COPY ./utils/build/docker/java/spring-boot/src ./src
 RUN mv ./src/main/resources/application-native.properties ./src/main/resources/application.properties
 
-# Copy tracer
-COPY --from=agent /dd-tracer/dd-java-agent.jar .
+# Build native application 
+RUN /opt/apache-maven-3.8.6/bin/mvn -Dmaven.repo.local=/maven package -P spring-native 
 
-# Build native application
-RUN /opt/apache-maven-3.8.6/bin/mvn package -P spring-native
+# Copy tracer
+COPY ./utils/build/docker/java/pom-native.xml ./pom.xml
+COPY --from=agent /dd-tracer/dd-java-agent.jar .
+# COPY binaries/blah.txt /blah.txt
+
+RUN /opt/apache-maven-3.8.6/bin/mvn -Dmaven.repo.local=/maven package -P spring-native
+
 
 FROM ubuntu
 
