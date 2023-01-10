@@ -127,7 +127,7 @@ do
             .
 
         ##### POC equivalent: python -m utils.docker build utils.build.docker.golang.net-http
-        # returns image id <image_id> e.g. 08cf60744719ea4c237c01c0fbc5137765b06efc0713286efa032c2defe5b222
+        # returns image id <image_id> e.g.  
         
         if test -f "binaries/waf_rule_set.json"; then
             SYSTEM_TESTS_APPSEC_EVENT_RULES_VERSION=$(cat binaries/waf_rule_set.json | jq -r '.metadata.rules_version // "1.2.5"')

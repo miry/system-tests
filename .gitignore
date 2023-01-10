@@ -1,8 +1,11 @@
 .idea
 .env
 __pycache__
+*.egg-info/
 binaries/*
 !binaries/README.md
+utils/docker_builder/build/
+.tox/
 
 venv
 

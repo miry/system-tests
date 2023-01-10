@@ -6,11 +6,13 @@ import os
 import tempfile
 import subprocess
 import shutil
-from utils import project_root
+# from utils import project_root
 from pydoc import locate
 import tarfile
 
 import docker
+
+project_root = Path(__file__).parent.parent
 
 
 class Image(object):
