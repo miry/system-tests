@@ -19,3 +19,5 @@ rfc3339-validator==0.1.4
 matplotlib
 
 docker==6.0.1
+
+docker_builder @ git+https://github.com/pawelchcki/docker-builder.git@34be08cb2c9b0ec23c1e1793db9f168c518599d5

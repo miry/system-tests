@@ -17,3 +17,6 @@ from pathlib import Path
 
 current_dir = Path(__file__).resolve().parent
 project_root = (current_dir / "..").resolve()
+
+import docker_builder
+docker_builder.set_project_root(project_root)
