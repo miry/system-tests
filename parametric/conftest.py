@@ -95,12 +95,16 @@ FROM ghcr.io/datadog/dd-trace-py/testrunner:7ce49bd78b0d510766fc5db12756a8840724
 WORKDIR /client
 RUN pyenv global 3.9.11
 RUN python3.9 -m pip install grpcio==1.46.3 grpcio-tools==1.46.3
+ADD . /client/ddtrace
 RUN python3.9 -m pip install %s
 """
         % (python_package,),
         container_cmd="python3.9 -m apm_test_client".split(" "),
         container_build_dir=python_dir,
-        volumes=[(os.path.join(python_dir, "apm_test_client"), "/client/apm_test_client"),],
+        volumes=[
+            (os.path.join(python_dir, "apm_test_client"), "/client/apm_test_client"),
+            (os.path.join(python_dir, "dd-trace-py"), "/client/ddtrace"),
+            ],
         env=env,
     )
 
