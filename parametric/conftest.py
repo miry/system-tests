@@ -394,7 +394,7 @@ def docker_run(
         )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def docker() -> str:
     """Fixture to ensure docker is ready to use on the system."""
     # Redirect output to /dev/null since we just care if we get a successful response code.
@@ -406,7 +406,7 @@ def docker() -> str:
     return shutil.which("docker")
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def docker_network_log_file(request) -> TextIO:
     with tempfile.NamedTemporaryFile(mode="w+") as f:
         yield f
@@ -415,14 +415,14 @@ def docker_network_log_file(request) -> TextIO:
 network_id = 0
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def docker_network_name() -> str:
     global network_id
     network_id += 1
     return "apm_shared_tests_network%i" % network_id
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def docker_network(docker: str, docker_network_log_file: TextIO, docker_network_name: str) -> str:
     # Initial check to see if docker network already exists
     cmd = [
@@ -473,12 +473,12 @@ def docker_network(docker: str, docker_network_log_file: TextIO, docker_network_
         )
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def test_agent_port() -> str:
     return "8126"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def test_agent_log_file(request) -> Generator[TextIO, None, None]:
     with tempfile.NamedTemporaryFile(mode="w+") as f:
         yield f
@@ -486,17 +486,16 @@ def test_agent_log_file(request) -> Generator[TextIO, None, None]:
         request.node._report_sections.append(("teardown", f"Test Agent Output", "".join(f.readlines())))
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def test_agent_container_name() -> str:
     return "ddapm-test-agent"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def test_agent(
     docker,
     docker_network: str,
     request,
-    tmp_path,
     test_agent_container_name: str,
     test_agent_port,
     test_agent_log_file: TextIO,
@@ -650,6 +649,8 @@ class APMLibrary:
         # Only attempt a flush if there was no exception raised.
         if exc_type is None:
             self.flush()
+
+        # TODO flush agent if scope=session??
 
     DistributedHTTPHeaders = {}
 
