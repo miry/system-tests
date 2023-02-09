@@ -1,0 +1,18 @@
+clusterAgent:
+  tolerations:
+  - key: "kubernetes.io/arch"
+    operator: "Equal"
+    value: "arm64"
+    effect: "NoSchedule"
+clusterChecksRunner:
+  tolerations:
+  - key: "kubernetes.io/arch"
+    operator: "Equal"
+    value: "arm64"
+    effect: "NoSchedule"
+agents:
+  tolerations:
+  - key: "kubernetes.io/arch"
+    operator: "Equal"
+    value: "arm64"
+    effect: "NoSchedule"
