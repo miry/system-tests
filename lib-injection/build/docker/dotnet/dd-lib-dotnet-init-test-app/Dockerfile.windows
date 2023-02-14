@@ -4,7 +4,8 @@ ARG RUNTIME
 # so we only use ASPNET runtime as the base-image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-windowsservercore-ltsc2019 AS base
 WORKDIR /app
-EXPOSE 80
+EXPOSE 18080
+ENV ASPNETCORE_URLS=http://localhost:18080
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:7.0.100-preview.2 AS build
 WORKDIR /app
