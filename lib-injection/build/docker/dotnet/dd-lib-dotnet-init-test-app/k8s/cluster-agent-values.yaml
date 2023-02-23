@@ -1,0 +1,5 @@
+clusterAgent:
+  image:
+    repository: docker.io/datadog/cluster-agent-dev
+    tag: main
+    doNotCheckTag: true

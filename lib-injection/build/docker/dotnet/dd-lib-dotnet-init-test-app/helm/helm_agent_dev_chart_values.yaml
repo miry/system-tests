@@ -1,4 +1,0 @@
-clusterAgent:
-  image: # Remove this entire 'image' config section when we have an official build of the cluster-agent that has the .NET auto_instrumentation changes
-    digest: sha256:4d7b7ebe80b35e81a84d336440714fa2694ffa9b860c490df0608761ae8640f6
-    repository: docker.io/datadog/cluster-agent-dev
