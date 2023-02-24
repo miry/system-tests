@@ -7,7 +7,7 @@ metadata:
     admission.datadoghq.com/config.mode: "socket"
     tags.datadoghq.com/service: dotnet-gameday-debian
   annotations:
-    admission.datadoghq.com/dotnet-lib.custom-image: "ghcr.io/datadog/dd-trace-dotnet/dd-lib-dotnet-init:a9d7ecb2041fe17060723c3acead9beb24c0dafa"
+    admission.datadoghq.com/dotnet-lib.version: "v2.24.0"
   name: dotnet-gameday-debian
 spec:
   containers:

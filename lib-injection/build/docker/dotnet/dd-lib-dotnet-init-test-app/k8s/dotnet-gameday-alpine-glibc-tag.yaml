@@ -2,16 +2,16 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: dotnet-gameday-alpine
+    app: dotnet-gameday-alpine-glibc-tag
     admission.datadoghq.com/enabled: "true"
     admission.datadoghq.com/config.mode: "socket"
-    tags.datadoghq.com/service: dotnet-gameday-alpine
+    tags.datadoghq.com/service: dotnet-gameday-alpine-glibc-tag
   annotations:
-    admission.datadoghq.com/dotnet-lib.version: "v2.24.0-musl"
-  name: dotnet-gameday-alpine
+    admission.datadoghq.com/dotnet-lib.version: "v2.24.0"
+  name: dotnet-gameday-alpine-glibc-tag
 spec:
   containers:
-    - name: dotnet-gameday-alpine
+    - name: dotnet-gameday-alpine-glibc-tag
       image: docker.io/ddzachmontoya/minimal-web-app:alpine
       readinessProbe:
         timeoutSeconds: 1
