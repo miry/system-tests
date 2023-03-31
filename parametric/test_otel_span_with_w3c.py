@@ -13,7 +13,6 @@ from parametric.utils.test_agent import get_span
 @pytest.mark.skip_library("java", "Not implemented")
 @pytest.mark.skip_library("php", "Not implemented")
 @pytest.mark.skip_library("ruby", "Not implemented")
-@pytest.mark.skip_library("golang", "Remove after https://github.com/DataDog/dd-trace-go/pull/1839 is merged")
 def test_otel_start_span_with_w3c(test_agent, test_library):
     """
         - Start/end a span with start and end options
@@ -44,15 +43,14 @@ def test_otel_start_span_with_w3c(test_agent, test_library):
 @pytest.mark.skip_library("java", "Not implemented")
 @pytest.mark.skip_library("php", "Not implemented")
 @pytest.mark.skip_library("ruby", "Not implemented")
-@pytest.mark.skip_library("golang", "BUG - waiting for 128bit work")
 def test_otel_span_with_w3c_headers(test_agent, test_library):
     with test_library:
         with test_library.otel_start_span(
-            name="name", http_headers=[["traceparent", "00-00000000000000001111111111111111-2222222222222222-01"]],
+            name="name", http_headers=[["traceparent", "00-12300000000000001111111111111111-2222222222222222-01"]],
         ) as span:
             context = span.span_context()
             assert context.get("trace_flags") == "01"
-            assert context.get("trace_id") == "00000000000000001111111111111111"
+            assert context.get("trace_id") == "12300000000000001111111111111111"
             span.end_span()
 
     span = get_span(test_agent)
