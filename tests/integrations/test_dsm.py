@@ -6,10 +6,10 @@ from utils import weblog, interfaces, scenarios, released, context
 from utils.tools import logger
 
 
-@released(cpp="?", golang="?", nodejs="?", php="?", python="?", ruby="?")
+@released(cpp="?", golang="?", php="?", python="?", ruby="?")
 @released(dotnet="2.29.0")
 @released(java={"spring-boot": "1.13.0", "*": "?"})
-@scenarios.integrations
+@released(nodejs="5.0.0-pre")
 class Test_DsmKafka:
     """ Verify DSM stats points for Kafka """
 
@@ -17,10 +17,18 @@ class Test_DsmKafka:
         self.r = weblog.get("/dsm?integration=kafka")
 
     def test_dsm_kafka(self):
+        print(self.r.request.request)
+        print(self.r.status_code)
+        print(self.r.headers)
         assert self.r.text == "ok"
 
-        consumer_hash = 5700134256996109392 if context.library == "nodejs" else 4463699290244539355
-        producer_hash = 13592025863925263556 if context.library == "nodejs" else 16645700936287432977
+        if context.library == "nodejs":
+            consumer_hash = 5700134256996109392
+            producer_hash = 13592025863925263556
+        else:
+            consumer_hash = 4463699290244539355
+            producer_hash = 16645700936287432977
+
         DsmHelper.assert_checkpoint_presence(
             hash_=consumer_hash,
             parent_hash=0,
