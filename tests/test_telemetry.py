@@ -318,7 +318,6 @@ class Test_Telemetry:
         That means, every new deployment/reload of application will cause reloading classes/dependencies and as the result we will see duplications.
         """,
     )
-    @bug(library="dotnet", reason="NodaTime not received in app-dependencies-loaded message")
     def test_app_dependencies_loaded(self):
         """test app-dependencies-loaded requests"""
 
@@ -396,7 +395,7 @@ class Test_Telemetry:
                 raise Exception(dependency + " not received in app-dependencies-loaded message")
 
     @missing_feature(
-        context.library in ("java", "nodejs", "golang", "dotnet"), reason="Telemetry V2 is not implemented yet. ",
+        context.library in ("java", "nodejs", "golang"), reason="Telemetry V2 is not implemented yet. ",
     )
     def test_app_started_product_info(self):
         """Assert that product information is accurately reported by telemetry"""
@@ -522,7 +521,7 @@ class Test_ProductsDisabled:
                 ), "Product information is present telemetry data on app-started event when all products are disabled"
 
 
-@released(cpp="?", dotnet="?", golang="?", java="1.7.0", nodejs="?", php="?", python="?", ruby="1.4.0")
+@released(cpp="?", dotnet="2.34.0", golang="?", java="1.7.0", nodejs="?", php="?", python="?", ruby="1.4.0")
 @scenarios.telemetry_dependency_loaded_test_for_dependency_collection_disabled
 class Test_DependencyEnable:
     """ Tests on DD_TELEMETRY_DEPENDENCY_COLLECTION_ENABLED flag """
@@ -540,6 +539,7 @@ class Test_DependencyEnable:
 
 @released(cpp="?", dotnet="?", golang="?", java="?", nodejs="?", php="?", python="?", ruby="?")
 @missing_feature(library="ruby", reason="DD_FORCE_BATCHING_ENABLE not yet supported")
+@irrelevant(library="dotnet", reason="always uses message-batch in v2, but doesn't guarantee event order in the batch")
 @scenarios.telemetry_message_batch_event_order
 class Test_ForceBatchingEnabled:
     """ Tests on DD_FORCE_BATCHING_ENABLE environment variable """
@@ -580,7 +580,7 @@ class Test_Log_Generation:
                 raise Exception(" Logs event is sent when log generation is disabled")
 
 
-@released(cpp="?", dotnet="?", golang="?", java="?", nodejs="?", php="?", python="?", ruby="1.4.0")
+@released(cpp="?", dotnet="2.34.0", golang="?", java="?", nodejs="?", php="?", python="?", ruby="1.4.0")
 @scenarios.telemetry_metric_generation_disabled
 class Test_Metric_Generation:
     """Assert that metrics are not reported when metric generation is disabled in telemetry"""
