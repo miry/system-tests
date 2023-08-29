@@ -58,6 +58,7 @@ class Test_BlockingAddresses:
         """can block the request forwarded for the ip"""
 
         assert self.block_ip_req.status_code == 403
+        assert self.block_ip_req.status_code == 190
 
     def setup_block_user(self):
         self.block_user_req = weblog.get("/users", params={"user": "blockedUser"})
