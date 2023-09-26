@@ -136,6 +136,9 @@ class Test_Headers_B3:
         assert span["meta"].get(ORIGIN) is None
 
     @enable_b3_single_key()
+    @missing_feature(
+        context.library == "ruby", reason="Propagators not configured for DD_TRACE_PROPAGATION_STYLE config",
+    )
     def test_headers_b3_single_key_propagate_valid(self, test_agent, test_library):
         self.test_headers_b3_propagate_valid(test_agent, test_library)
 
@@ -160,5 +163,8 @@ class Test_Headers_B3:
         self.test_headers_b3_propagate_invalid(test_agent, test_library)
 
     @enable_migrated_b3_single_key()
+    @missing_feature(
+        context.library == "ruby", reason="Propagators not configured for DD_TRACE_PROPAGATION_STYLE config",
+    )
     def test_headers_b3_migrated_single_key_propagate_valid(self, test_agent, test_library):
         self.test_headers_b3_propagate_valid(test_agent, test_library)
