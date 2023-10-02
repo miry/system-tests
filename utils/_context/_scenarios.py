@@ -894,6 +894,14 @@ class scenarios:
         doc="Spawns tracer, agent, and a full set of database. Test the intgrations of thoise database with tracers",
     )
 
+    integrations_payload_tagging = EndToEndScenario(
+        "PAYLOAD_TAGGING",
+        weblog_env={
+            "DD_TRACE_PAYLOAD_TAGS": "*,-config filtered"
+        },
+        doc="Payload tagging feature tests"
+    )
+
     profiling = EndToEndScenario(
         "PROFILING",
         library_interface_timeout=160,

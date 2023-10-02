@@ -222,6 +222,34 @@ app.get('/db', async (req, res) => {
   }
 });
 
+app.post('/payload_endpoint', async (req, res) => {
+  res.send('Received post data')
+})
+
+app.post('/payload_tagging/:integration', async (req, res) => {
+  const fetchWork = require('./integrations/http/fetch')
+  const httpWork = require('./integrations/http/http')
+  const http2Work = require('./integrations/http/http2')
+
+  const { integration } = req.params
+  const payload = req.body
+
+  const workMap = {
+    'http': httpWork,
+    'http2': http2Work,
+    'fetch': fetchWork
+  }
+
+  const worker = workMap[integration]
+  if (worker !== undefined) {
+    const homeURL = new URL('/payload_endpoint', `${req.protocol}://${req.get('host')}`)
+    await worker.doWork({url: homeURL, payload})
+    res.send(`Successfully did work for ${integration}`)
+  } else {
+    res.status(404).send(`No integration named ${integration}`)
+  }
+})
+
 require("./iast")(app, tracer);
 require('./auth')(app, passport, tracer)
 require('./graphql')(app)

@@ -197,6 +197,10 @@ tests/:
       Test_Debugger_Method_Probe_Snaphots: irrelevant
       Test_Debugger_Method_Probe_Statuses: missing_feature
   integrations/:
+    test_payload_tagging.py:
+      Test_Payload_Tagging:
+        '*': missing_feature
+        express4: v1.0.0
     test_db_integrations_sql.py:
       Test_Agent_Mssql_db_integration:
         '*': missing_feature
