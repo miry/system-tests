@@ -162,7 +162,7 @@ class _BaseIntegrationsSqlTestClass:
     @missing_feature(library="nodejs", reason="not implemented yet")
     @missing_feature(library="java", reason="not implemented yet")
     def test_db_row__count(self):
-        """ The number of rows/results from the query or operation. For caches and other datastores. 
+        """ The number of rows/results from the query or operation. For caches and other datastores.
         This tag should only set for operations that retrieve stored data, such as GET operations and queries, excluding SET and other commands not returning data.  """
         span = self._get_sql_span_for_request(self.requests[self.db_service]["select"])
         assert span["meta"]["db.row_count"] > 0, "Test is failing for select"
@@ -354,7 +354,7 @@ class Test_Tracer_Mssql_db_integration(_BaseTracerIntegrationsSqlTestClass):
     @missing_feature(library="java", reason="Not implemented yet")
     @missing_feature(library="nodejs", reason="Not implemented yet")
     def test_db_mssql_instance__name(self):
-        """ The Microsoft SQL Server instance name connecting to. This name is used to determine the port of a named instance. 
+        """ The Microsoft SQL Server instance name connecting to. This name is used to determine the port of a named instance.
             This value should be set only if it’s specified on the mssql connection string. """
         for db_operation, request in self.requests[self.db_service].items():
             span = self._get_sql_span_for_request(request)
@@ -386,7 +386,7 @@ class Test_Agent_Mssql_db_integration(_BaseAgentIntegrationsSqlTestClass):
     @missing_feature(library="java", reason="Not implemented yet")
     @missing_feature(library="nodejs", reason="Not implemented yet")
     def test_db_mssql_instance__name(self):
-        """ The Microsoft SQL Server instance name connecting to. This name is used to determine the port of a named instance. 
+        """ The Microsoft SQL Server instance name connecting to. This name is used to determine the port of a named instance.
             This value should be set only if it’s specified on the mssql connection string. """
         for db_operation, request in self.requests[self.db_service].items():
             span = self._get_sql_span_for_request(request)

@@ -35,6 +35,7 @@ class Test_Payload_tagging:
     def check_boolean(self, span, tag):
         if self.language == 'nodejs':
             return span.get('metrics', {}).get(tag), 1.0
+        return span.get('meta', {}).get(tag), True
 
     @staticmethod
     def prefix_dict(obj, prefix):
@@ -144,10 +145,3 @@ class Test_Payload_tagging:
                 tag_value, expected_value = self.check_boolean(span, '_dd.payload_tags_trimmed')
                 assert tag_value is not None, 'No _dd.payload_tags_trimmed marker'
                 assert tag_value == expected_value
-
-    def setup_trace_server_payload(self):
-        # Need to have servers waiting in the main app loop on specific routes
-        # Contract:
-        # - /server/:integration forwards the request via express to a `integration` server
-        # - the `integration` servers grab the origin payload and rewrite it in the response
-        pass

@@ -197,37 +197,39 @@ tests/:
       Test_Debugger_Method_Probe_Snaphots: irrelevant
       Test_Debugger_Method_Probe_Statuses: missing_feature
   integrations/:
-    test_payload_tagging.py:
-      Test_Payload_Tagging:
-        '*': missing_feature
-        express4: v1.0.0
-    test_db_integrations_sql.py:
-      Test_Agent_Mssql_db_integration:
-        '*': missing_feature
-        express4: v1.0.0
-      Test_Agent_Mysql_db_integration:
-        '*': missing_feature
-        express4: v1.0.0
-      Test_Agent_Postgres_db_integration:
-        '*': missing_feature
-        express4: v1.0.0
-      Test_Tracer_Mssql_db_integration:
-        '*': missing_feature
-        express4: v1.0.0
-      Test_Tracer_Mysql_db_integration:
-        '*': missing_feature
-        express4: v1.0.0
-      Test_Tracer_Postgres_db_integration:
-        '*': missing_feature
-        express4: v1.0.0
-    test_dbm.py:
-      Test_Dbm: missing_feature
-    test_dsm.py:
-      Test_DsmHttp: missing_feature
-      Test_DsmKafka: v4.4.0
-      Test_DsmRabbitmq: missing_feature
-      Test_DsmRabbitmq_FanoutExchange: missing_feature
-      Test_DsmRabbitmq_TopicExchange: missing_feature
+    http/:
+      test_payload_tagging.py:
+        Test_Payload_Tagging:
+          '*': missing_feature
+          express4: v1.0.0
+    db/:
+      test_db_integrations_sql.py:
+        Test_Agent_Mssql_db_integration:
+          '*': missing_feature
+          express4: v1.0.0
+        Test_Agent_Mysql_db_integration:
+          '*': missing_feature
+          express4: v1.0.0
+        Test_Agent_Postgres_db_integration:
+          '*': missing_feature
+          express4: v1.0.0
+        Test_Tracer_Mssql_db_integration:
+          '*': missing_feature
+          express4: v1.0.0
+        Test_Tracer_Mysql_db_integration:
+          '*': missing_feature
+          express4: v1.0.0
+        Test_Tracer_Postgres_db_integration:
+          '*': missing_feature
+          express4: v1.0.0
+      test_dbm.py:
+        Test_Dbm: missing_feature
+      test_dsm.py:
+        Test_DsmHttp: missing_feature
+        Test_DsmKafka: v4.4.0
+        Test_DsmRabbitmq: missing_feature
+        Test_DsmRabbitmq_FanoutExchange: missing_feature
+        Test_DsmRabbitmq_TopicExchange: missing_feature
   parametric/:
     test_dynamic_configuration.py:
       TestDynamicConfigV1: v4.11.0

@@ -1,6 +1,5 @@
 module.exports = {
   doWork: async ({ url, payload }) => {
-    console.log(url, payload)
     return fetch(
       url,
       {
