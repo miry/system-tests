@@ -51,11 +51,14 @@ class Test_Headers_Datadog:
             )
 
         span = get_span(test_agent)
-        assert span.get("trace_id") == 123456789
-        assert span_has_no_parent(span)
+
+        # Test the Origin first to observe if this gets propagated in the case where x-datadog-parent-id=0
         origin = span["meta"].get(ORIGIN)
         # allow implementations to split origin at the first ','
         assert origin == "synthetics;=web,z" or origin == "synthetics;=web"
+
+        assert span.get("trace_id") == 123456789
+        assert span_has_no_parent(span)
         assert span["meta"].get("_dd.p.dm") == "-4"
         assert span["metrics"].get(SAMPLING_PRIORITY_KEY) == 2
 
