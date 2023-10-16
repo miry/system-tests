@@ -92,6 +92,26 @@ public class AppSecIastSource {
         return String.format("@RequestBody to Test bean -> value:%s", value);
     }
 
+    @GetMapping("/geturi/test")
+    String uriTest(HttpServletRequest request) {
+        StringBuffer url = request.getRequestURL();
+        String urlString = url.toString();
+        String param = urlString.substring(url.lastIndexOf("/") +1 , url.length());
+        System.out.println(" uri param " + param);
+        sql.insecureSql(param, param, (statement, sql) -> {statement.executeQuery(sql); System.out.println(" uri test: " + sql);return null;});
+        return "OK";
+    }
+
+    @GetMapping("/path/test")
+    String pathTest(HttpServletRequest request) {
+        String uri = request.getPathTranslated();
+        System.out.println("path uri: " +  uri);
+        String param = uri.substring(uri.lastIndexOf("/") +1, uri.length());
+        System.out.println("path param: " +  param);
+        sql.insecureSql(param, param, (statement, sql) -> {statement.executeQuery(sql); System.out.println(" path test: " + sql);return null;});
+        return "OK";
+    }
+
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private <E> String find(final Collection<E> list,
                             final Predicate<E> matcher,
