@@ -27,6 +27,7 @@ class Test_PythonKafka:
 
     WEBLOG_TO_BUDDY_TOPIC = "Test_PythonKafka_weblog_to_buddy"
     BUDDY_TO_WEBLOG_TOPIC = "Test_PythonKafka_buddy_to_weblog"
+    WEBLOG_TO_WEBLOG_TOPIC = "Test_PythonKafka_self"
 
     @classmethod
     def get_span(cls, interface, span_kind, topic):
@@ -136,16 +137,26 @@ class Test_PythonKafka:
         # asserting on direct parent/child relationships
         assert producer_span["trace_id"] == consumer_span["trace_id"]
 
+    def setup_self_link(self):
+        self.production_response = weblog.get("/kafka/produce", params={"topic": self.WEBLOG_TO_WEBLOG_TOPIC})
+        self.consume_response = weblog.get("/kafka/consume", params={"topic": self.WEBLOG_TO_WEBLOG_TOPIC})
+
+    def test_self_link(self):
+        producer_span = self.get_span(interfaces.library, span_kind="producer", topic=self.WEBLOG_TO_WEBLOG_TOPIC)
+        consumer_span = self.get_span(interfaces.library, span_kind="consumer", topic=self.WEBLOG_TO_WEBLOG_TOPIC)
+
+        assert producer_span["trace_id"] == consumer_span["trace_id"]
+
     def validate_kafka_spans(self, producer_interface, consumer_interface, topic):
         """
             Validates production/consumption of kafka message.
             It works the same for both test_produce and test_consume
         """
 
-        # Check that the producer did not created any consumer span
+        # Check that the producer did not create any consumer span
         assert self.get_span(producer_interface, span_kind="consumer", topic=topic) is None
 
-        # Check that the consumer did not created any producer span
+        # Check that the consumer did not create any producer span
         assert self.get_span(consumer_interface, span_kind="producer", topic=topic) is None
 
         producer_span = self.get_span(producer_interface, span_kind="producer", topic=topic)
