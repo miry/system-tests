@@ -56,7 +56,7 @@ public class App {
         if (isAgentEnabled()) {
             spanExporters.add(
                 OtlpHttpSpanExporter.builder()
-                    .setEndpoint("http://proxy:8126/v1/traces")
+                    .setEndpoint("http://localhost:4318/v1/traces")
                     .addHeader("dd-protocol", "otlp")
                     .addHeader("dd-otlp-path", "agent")
                     .build());
@@ -74,7 +74,7 @@ public class App {
         if (isCollectorEnabled()) {
             spanExporters.add(
                 OtlpHttpSpanExporter.builder()
-                    .setEndpoint("http://proxy:8126/v1/traces")
+                    .setEndpoint("http://localhost:4318/v1/traces")
                     .addHeader("dd-protocol", "otlp")
                     .addHeader("dd-otlp-path", "collector")
                     .build());
@@ -99,7 +99,7 @@ public class App {
         if (isAgentEnabled()) {
             metricExporters.add(
                     OtlpHttpMetricExporter.builder()
-                            .setEndpoint("http://proxy:8126/v1/metrics")
+                            .setEndpoint("http://localhost:4318/v1/metrics")
                             .addHeader("dd-protocol", "otlp")
                             .addHeader("dd-otlp-path", "agent")
                             .setAggregationTemporalitySelector(AggregationTemporalitySelector.deltaPreferred())
@@ -108,7 +108,7 @@ public class App {
         if (isCollectorEnabled()) {
             metricExporters.add(
                     OtlpHttpMetricExporter.builder()
-                            .setEndpoint("http://proxy:8126/v1/metrics")
+                            .setEndpoint("http://localhost:4318/v1/metrics")
                             .addHeader("dd-protocol", "otlp")
                             .addHeader("dd-otlp-path", "collector")
                             .setAggregationTemporalitySelector(AggregationTemporalitySelector.deltaPreferred())
@@ -128,7 +128,7 @@ public class App {
         if (isAgentEnabled()) {
             logRecordExporters.add(
                     OtlpHttpLogRecordExporter.builder()
-                            .setEndpoint("http://proxy:8126/v1/logs")
+                            .setEndpoint("http://localhost:4318/v1/logs")
                             .addHeader("dd-protocol", "otlp")
                             .addHeader("dd-otlp-path", "agent")
                             .build());
@@ -136,7 +136,7 @@ public class App {
         if (isCollectorEnabled()) {
             logRecordExporters.add(
                     OtlpHttpLogRecordExporter.builder()
-                            .setEndpoint("http://proxy:8126/v1/logs")
+                            .setEndpoint("http://localhost:4318/v1/logs")
                             .addHeader("dd-protocol", "otlp")
                             .addHeader("dd-otlp-path", "collector")
                             .build());
@@ -153,7 +153,8 @@ public class App {
     }
 
     private static boolean isAgentEnabled() {
-        return "true".equalsIgnoreCase(System.getenv("OTEL_SYSTEST_INCLUDE_AGENT"));
+        return true;
+        // return "true".equalsIgnoreCase(System.getenv("OTEL_SYSTEST_INCLUDE_AGENT"));
     }
 
     private static boolean isCollectorEnabled() {
