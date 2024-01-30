@@ -87,7 +87,7 @@ def enable_tracecontext_datadog_b3multi_extract_first_true() -> Any:
 
 @scenarios.parametric
 class Test_Headers_Precedence:
-    @missing_feature(context.library == "dotnet", reason="New 'datadog' default hasn't been implemented yet")
+    @missing_feature(context.library == "dotnet", reason="Implements the new 'datadog,tracecontext' default")
     @missing_feature(context.library == "golang", reason="New 'datadog' default hasn't been implemented yet")
     @irrelevant(context.library >= "cpp@0.1.12", reason="Implements the new 'datadog,tracecontext' default")
     @irrelevant(context.library >= "java@1.24.0", reason="Implements the new 'datadog,tracecontext' default")
@@ -218,6 +218,7 @@ class Test_Headers_Precedence:
     @missing_feature(
         context.library == "ruby", reason="Issue: tracecontext,Datadog was never the default configuration"
     )
+    @irrelevant(context.library > "dotnet@2.46.0", reason="Implements the new 'datadog,tracecontext' default")
     def test_headers_precedence_propagationstyle_default_tracecontext_datadog(self, test_agent, test_library):
         self.test_headers_precedence_propagationstyle_tracecontext_datadog(test_agent, test_library)
 
@@ -485,7 +486,7 @@ class Test_Headers_Precedence:
     @missing_feature(context.library < "java@1.24.0", reason="Implemented from 1.24.0")
     @missing_feature(context.library == "ruby", reason="library does not yet implement this default configuration")
     @irrelevant(context.library == "cpp", reason="library does not implement this default configuration")
-    @irrelevant(context.library == "dotnet", reason="library does not implement this default configuration")
+    @irrelevant(context.library < "dotnet@2.47.0", reason="Implemented from 2.47.0")
     @irrelevant(context.library == "golang", reason="library does not implement this default configuration")
     @irrelevant(context.library == "nodejs", reason="library does not implement this default configuration")
     @irrelevant(context.library == "php", reason="library does not implement this default configuration")
