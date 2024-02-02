@@ -80,7 +80,7 @@ class Test_Span_Links:
             assert link.get("tracestate") == "dd=s:1;t.dm:-0"
         assert link.get("flags", 0) == 1 | TRACECONTEXT_FLAGS_SET  # Sampled and Set (31 bit according the RFC)
 
-    @pytest.mark.parametrize("library_env", [{"DD_TRACE_API_VERSION": "v0.5"}])
+    @pytest.mark.parametrize("library_env", [{"DD_TRACE_API_VERSION": "v0.5", "DD_TRACE_AGENT_PROTOCOL_VERSION": "0.5"}])
     def test_span_started_with_link_v05(self, test_agent, test_library):
         """Test adding a span link created from another span and serialized in the expected v0.5 format.
         This tests the functionality of "create a direct link between two spans
@@ -121,6 +121,7 @@ class Test_Span_Links:
             assert link.get("tracestate") == "dd=s:1;t.dm:-0"
         assert link.get("flags") == 1
 
+    @missing_feature(library="nodejs", reason="does not currently support creating a link from distributed datadog headers")
     def test_span_link_from_distributed_datadog_headers(self, test_agent, test_library):
         """Properly inject datadog distributed tracing information into span links when trace_api is v0.4.
         Testing the conversion of x-datadog-* headers to tracestate for
@@ -220,11 +221,10 @@ class Test_Span_Links:
         with test_library:
             with test_library.start_span("root") as parent:
                 with test_library.start_span("first", parent_id=parent.span_id) as first:
-                    pass
-                with test_library.start_span(
-                    "second", parent_id=parent.span_id, links=[Link(parent_id=parent.span_id)]
-                ) as second:
-                    second.add_link(first.span_id, attributes={"bools": [True, False], "nested": [1, 2]})
+                    with test_library.start_span(
+                        "second", parent_id=parent.span_id, links=[Link(parent_id=parent.span_id)]
+                    ) as second:
+                        second.add_link(first.span_id, attributes={"bools": [True, False], "nested": [1, 2]})
 
         traces = test_agent.wait_for_num_traces(1)
         assert len(traces[0]) == 3
@@ -257,6 +257,7 @@ class Test_Span_Links:
         assert link["attributes"].get("nested.1") == "2"
 
     @missing_feature(library="python", reason="links do not influence the sampling decsion of spans")
+    @missing_feature(library="nodejs", reason="does not currently support creating a link from distributed datadog headers")
     def test_span_link_propagated_sampling_decisions(self, test_agent, test_library):
         """Sampling decisions made by an upstream span should be propagated via span links to
         downstream spans.
