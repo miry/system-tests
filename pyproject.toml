@@ -38,6 +38,7 @@ allow_no_feature_nodes = [
     "tests/parametric/test_headers_precedence.py",
     "tests/parametric/test_headers_tracecontext.py",
     "tests/parametric/test_headers_tracestate_dd.py",
+    "tests/parametric/test_otel_interoperability.py",
     "tests/parametric/test_otel_span_methods.py",
     "tests/parametric/test_otel_span_with_w3c.py",
     "tests/parametric/test_otel_tracer.py",
