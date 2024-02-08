@@ -7,7 +7,7 @@ tests/:
   appsec/:
     api_security/:
       test_api_security_rc.py:
-        Test_API_Security_RC_ASM_DD_processors: 
+        Test_API_Security_RC_ASM_DD_processors:
           '*': missing_feature
           django-poc: v2.6.0dev
           fastapi: v2.6.0dev
@@ -15,7 +15,7 @@ tests/:
           python3.12: v2.6.0dev
           uds-flask: v2.6.0dev
           uwsgi-poc: v2.6.0dev
-        Test_API_Security_RC_ASM_DD_scanners: 
+        Test_API_Security_RC_ASM_DD_scanners:
           '*': missing_feature
           django-poc: v2.6.0dev
           fastapi: v2.6.0dev
@@ -550,6 +550,7 @@ tests/:
       TestDynamicConfigV1: missing_feature
       TestDynamicConfigV1_ServiceTargets: missing_feature
       TestDynamicConfigV2: missing_feature
+    test_otel_interoperability.py: missing_feature
     test_sampling_delegation.py:
       Test_Decisionless_Extraction: >-
         missing_feature
