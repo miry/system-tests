@@ -191,7 +191,7 @@ class TestDynamicConfigTracingEnabled:
                 "wait_for_num_traces does not raise an exception."
             )
 
-        set_and_wait_rc(test_agent, config_overrides={"tracing_enabled": "false"})
+        set_and_wait_rc(test_agent, config_overrides={"tracing_enabled": False})
         with test_library:
             with test_library.start_span("test"):
                 pass
