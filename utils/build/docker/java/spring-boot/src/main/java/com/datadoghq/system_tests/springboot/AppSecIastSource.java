@@ -1,35 +1,46 @@
 package com.datadoghq.system_tests.springboot;
 
+import com.datadoghq.system_tests.iast.utils.PathExamples;
 import com.datadoghq.system_tests.iast.utils.SqlExamples;
 import com.datadoghq.system_tests.iast.utils.TestBean;
-import org.springframework.web.bind.annotation.*;
+import com.datadoghq.system_tests.springboot.kafka.KafkaConnector;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
-
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("Convert2MethodRef")
 @RestController
 @RequestMapping("/iast/source")
+@EnableAsync
 public class AppSecIastSource {
 
     private final SqlExamples sql;
+    private final PathExamples path;
 
     public AppSecIastSource(final DataSource dataSource) {
         this.sql = new SqlExamples(dataSource);
+        this.path = new PathExamples();
     }
 
     @GetMapping("/parameter/test")
@@ -141,6 +152,34 @@ public class AppSecIastSource {
             return null;
         });
         return "OK";
+    }
+
+    @GetMapping("/kafkakey/test")
+    public DeferredResult<ResponseEntity<String>> kafkaKey() throws Exception {
+        return kafka(record -> record.key());
+    }
+
+    @GetMapping("/kafkavalue/test")
+    public DeferredResult<ResponseEntity<String>> kafkaValue() throws Exception {
+        return kafka(record -> record.value());
+    }
+
+    private DeferredResult<ResponseEntity<String>> kafka(final Function<ConsumerRecord<String, String>, String> op) throws Exception {
+        final DeferredResult<ResponseEntity<String>> result = new DeferredResult<>(
+                TimeUnit.SECONDS.toMillis(10),
+                ResponseEntity.internalServerError().body("Failed to consume messages"));
+        final KafkaConnector connector = new KafkaConnector();
+        connector.startConsumingMessages("iast-group", records -> {
+            for (ConsumerRecord<String, String> record : records) {
+                System.out.println("got record! " + record.key() + ":" + record.value() + " from " + record.topic());
+                if ("hello key!".equals(record.key())) {
+                    final String insecurePath = path.insecurePathTraversal(op.apply(record));
+                    result.setResult(ResponseEntity.ok(insecurePath));
+                }
+            }
+        });
+        connector.produceMessageWithoutNewThread("hello key!", "hello value!");
+        return result;
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")

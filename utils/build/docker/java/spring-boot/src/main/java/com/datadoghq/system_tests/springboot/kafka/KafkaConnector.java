@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class KafkaConnector {
     public static final String BOOTSTRAP_SERVERS = "kafka:9092";
@@ -50,59 +52,81 @@ public class KafkaConnector {
         return new KafkaConsumer<String, String>(props);
     }
 
-    public void startProducingMessage(String message) throws Exception {
+    public void startProducingMessage(String key, String value) throws Exception {
         Thread thread = new Thread("KafkaProduce") {
             public void run() {
                 KafkaTemplate<String, String> kafkaTemplate = createKafkaTemplateForProducer();
-                System.out.printf("Publishing message: %s%n", message);
-                kafkaTemplate.send(topic, message);
+                System.out.printf("Publishing message: %s:%s%n", key, value);
+                kafkaTemplate.send(topic, key, value);
             }
         };
         thread.start();
     }
 
-    // Ideally we should be able to use @Component and @KafkaListener to auto consume messages, but I wasn't able
-    // to get it to work. Can look into this as a follow up.
-    public void startConsumingMessages(String topicName) throws Exception {
+    public void startProducingMessage(String message) throws Exception {
+        startProducingMessage(null, message);
+    }
+
+    public void startConsumingMessages(String topicName, Consumer<ConsumerRecords<String, String>> callback) throws Exception {
         Thread thread = new Thread("KafkaConsume") {
             public void run() {
                 KafkaConsumer<String, String> consumer = createKafkaConsumer(topicName);
                 consumer.subscribe(Collections.singletonList(topic));
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.MAX_VALUE));
-                for (ConsumerRecord<String, String> record : records) {
-                    System.out.println("got record! " + record.value() + " from " + record.topic());
-                }
+                callback.accept(records);
             }
         };
         thread.start();
         System.out.println("Started Kafka consumer thread");
     }
 
+    // Ideally we should be able to use @Component and @KafkaListener to auto consume messages, but I wasn't able
+    // to get it to work. Can look into this as a follow up.
+    public void startConsumingMessages(String topicName) throws Exception {
+        startConsumingMessages(topicName, records -> {
+            for (ConsumerRecord<String, String> record : records) {
+                System.out.println("got record! " + record.value() + " from " + record.topic());
+            }
+        });
+    }
+
+    // For APM testing, produce message without starting a new thread
+    public void produceMessageWithoutNewThread(String key, final String value) throws Exception {
+        KafkaTemplate<String, String> kafkaTemplate = createKafkaTemplateForProducer();
+        System.out.printf("Publishing message: %s:%s%n", key, value);
+        kafkaTemplate.send(topic, key, value);
+    }
+
     // For APM testing, produce message without starting a new thread
     public void produceMessageWithoutNewThread(String message) throws Exception {
-        KafkaTemplate<String, String> kafkaTemplate = createKafkaTemplateForProducer();
-        System.out.printf("Publishing message: %s%n", message);
-        kafkaTemplate.send(topic, message);
+        produceMessageWithoutNewThread(null, message);
     }
 
     // For APM testing, a consume message without starting a new thread
-    public boolean consumeMessageWithoutNewThread(Integer timeout_ms) throws Exception {
+    public boolean consumeMessageWithoutNewThread(Integer timeout_ms, Function<ConsumerRecords<String, String>, Boolean> callback) throws Exception {
         KafkaConsumer<String, String> consumer = createKafkaConsumer(topic);
         consumer.subscribe(Collections.singletonList(topic));
-        boolean recordFound = false;
         long startTime = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - startTime < timeout_ms) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            if (callback.apply(records)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // For APM testing, a consume message without starting a new thread
+    public boolean consumeMessageWithoutNewThread(Integer timeout_ms) throws Exception {
+        return consumeMessageWithoutNewThread(timeout_ms, records -> {
+            boolean recordFound = false;
             for (ConsumerRecord<String, String> record : records) {
                 System.out.println("got record! " + record.value() + " from " + record.topic());
                 recordFound = true;
             }
-            if (recordFound) {
-                return true;
-            }
-        }
-        
-        return false;
+            return recordFound;
+        });
     }
 }
