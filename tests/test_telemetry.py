@@ -472,7 +472,7 @@ class Test_Telemetry:
             "nodejs": {"hostname": "proxy", "port": 8126, "appsec.enabled": True},
             # to-do :need to add configuration keys once python bug is fixed
             "python": {},
-            "java": {"trace.agent.port": 8126, "telemetry.heartbeat.interval": 2},
+            "java": {"trace_agent_port": 8126, "telemetry_heartbeat_interval": 2},
         }
         configuration_map = test_configuration[context.library.library]
 
